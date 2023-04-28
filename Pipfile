@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 "discord.py" = "*"
 notion-client = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
