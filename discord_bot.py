@@ -65,7 +65,7 @@ async def poll_notion_database():
         for page in pages:
             message = format_page_message(page)
             await channel.send(message)
-        await asyncio.sleep(120)  # Poll every 60 seconds
+        await asyncio.sleep(600)  # Poll every N seconds
 
 @bot.event
 async def on_ready():
