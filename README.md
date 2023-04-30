@@ -6,7 +6,9 @@ This Discord bot posts updates from a designated Notion database to a dedicated 
 
 ## Instruction
 
-Here are quick instructions on how to run the bot on your machine. This assumes you have already cloned the repository and installed the requirements from the `Pipfile`.
+Below are concise instructions to help you run the bot on your machine. These steps assume you have already cloned the repository and installed the necessary requirements from the `Pipfile`.
+
+Please note that the bot will only function while the script is active. To ensure continuous usage, it is recommended to run the script on a server.
 
 ### Create a Notion Integration
 
