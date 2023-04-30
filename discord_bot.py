@@ -24,7 +24,6 @@ DISCORD_CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID"))
 
 # Create default intents and disable members intent
 intents = Intents.default()
-intents.members = False
 
 # Initialize the Discord bot with the specified intents
 bot = commands.Bot(command_prefix="!", intents=intents)
