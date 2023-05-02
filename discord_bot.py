@@ -2,16 +2,12 @@ import os
 import asyncio
 from datetime import datetime
 import logging
+from typing import List
 
 from discord import Intents
 from discord.ext import commands
 from notion_client import Client
 from dotenv import load_dotenv
-
-# Configure logging
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-logger.addHandler(logging.StreamHandler())
 
 # Load environment variables from .env file
 load_dotenv()
@@ -21,6 +17,17 @@ DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 NOTION_API_KEY = os.getenv("NOTION_API_KEY")
 DATABASE_ID = os.getenv("DATABASE_ID")
 DISCORD_CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID"))
+POLL_INTERVAL = int(os.getenv("POLL_INTERVAL", 120))
+LOGLEVEL = os.environ.get("LOGLEVEL", "INFO").upper()
+
+# Configure logging
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(
+    logging.Formatter("%(asctime)s %(levelname)s %(message)s", "%Y-%m-%d %H:%M:%S")
+)
+logger = logging.getLogger(__name__)
+logger.setLevel(LOGLEVEL)
+logger.addHandler(console_handler)
 
 # Create default intents and disable members intent
 intents = Intents.default()
@@ -35,8 +42,12 @@ notion = Client(auth=NOTION_API_KEY)
 last_checked = datetime.utcnow().replace(microsecond=0).isoformat()
 
 
-# Helper function to retrieve pages from Notion database
-async def get_notion_pages():
+async def get_notion_pages() -> List[dict]:
+    """
+    Fetch pages from the Notion database since the last checked timestamp.
+
+    :return: A list of pages.
+    """
     global last_checked
     try:
         pages = notion.databases.query(
@@ -61,14 +72,22 @@ async def get_notion_pages():
         return []
 
 
-# Helper function to format Notion pages as Discord messages
-def format_page_message(page):
+def format_page_message(page: dict) -> str:
+    """
+    Format the page title to be sent as a Discord message.
+
+    :param page: The Notion page.
+    :return: The formatted message.
+    """
     title = page["properties"]["Name"]["title"][0]["text"]["content"]
     message = f"**New Update:** {title}\n"
     return message
 
 
-async def poll_notion_database():
+async def poll_notion_database() -> None:
+    """
+    Poll the Notion database and send updates to a Discord channel.
+    """
     while True:
         pages = await get_notion_pages()
         channel = bot.get_channel(DISCORD_CHANNEL_ID)
@@ -82,7 +101,10 @@ async def poll_notion_database():
 
 
 @bot.event
-async def on_ready():
+async def on_ready() -> None:
+    """
+    Event that occurs when the bot is ready.
+    """
     logger.info(f"{bot.user} is now online!")
     try:
         await poll_notion_database()
