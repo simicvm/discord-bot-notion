@@ -34,6 +34,7 @@ notion = Client(auth=NOTION_API_KEY)
 # Store the last checked timestamp
 last_checked = datetime.utcnow().replace(microsecond=0).isoformat()
 
+
 # Helper function to retrieve pages from Notion database
 async def get_notion_pages():
     global last_checked
@@ -45,27 +46,27 @@ async def get_notion_pages():
                     "and": [
                         {
                             "timestamp": "last_edited_time",
-                            "last_edited_time": {
-                                "after": last_checked
-                            }
+                            "last_edited_time": {"after": last_checked},
                         }
                     ]
-                }
+                },
             }
         ).get("results")
         last_checked = datetime.utcnow().replace(microsecond=0).isoformat()
         logger.info(f"Last checked at: {last_checked}")
         logger.debug(pages)
         return pages
-    except  Exception as e:
+    except Exception as e:
         logger.error(f"Error fetching pages from Notion: {e}")
         return []
+
 
 # Helper function to format Notion pages as Discord messages
 def format_page_message(page):
     title = page["properties"]["Name"]["title"][0]["text"]["content"]
     message = f"**New Update:** {title}\n"
     return message
+
 
 async def poll_notion_database():
     while True:
@@ -79,6 +80,7 @@ async def poll_notion_database():
                 logger.error(f"Error sending message to Discord: {e}")
         await asyncio.sleep(120)  # Poll every N seconds
 
+
 @bot.event
 async def on_ready():
     logger.info(f"{bot.user} is now online!")
@@ -86,6 +88,7 @@ async def on_ready():
         await poll_notion_database()
     except Exception as e:
         logger.error(f"Error polling Notion database: {e}")
+
 
 if __name__ == "__main__":
     bot.run(DISCORD_BOT_TOKEN)
