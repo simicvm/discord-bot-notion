@@ -59,6 +59,10 @@ Copy the Notion database ID you want to track and add your integration to the da
 
 Paste the Discord bot token you obtained earlier into `DISCORD_BOT_TOKEN`.
 
+Optionally, add the poll interval in seconds, e.g., `POLL_INTERVAL = 120`. The interval should be at least 120 seconds, and it defaults to that value if not provided.
+
+Optionally, set the log level, e.g., `LOGLEVEL = 'INFO'`. Allowed values are: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. The default value is INFO.
+
 ### Give Channel Permission (optional)
 
 If your desired channel is private, you will need to give permissions to the bot. Go to `Edit Channel` -> `Permissions` in Discord for the channel you want the bot to post in and make the appropriate changes.
